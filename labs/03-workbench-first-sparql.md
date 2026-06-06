@@ -17,16 +17,21 @@ Neptune Workbench gives you a browser-based notebook experience for querying and
 
 ## Step 1: Create A Notebook
 
-In the Amazon Neptune console:
+If you created the notebook during Lab 02, skip to Step 2 after the notebook status becomes ready.
+
+If you did not create a notebook during database creation, create one now in the Amazon Neptune console:
 
 1. Go to **Notebooks**.
 2. Choose **Create notebook**.
 3. Select your Neptune Database cluster: `kg-lab-neptune`.
 4. Notebook name: `kg-lab-notebook`.
-5. Choose a small notebook instance type.
-6. Let the console create or select the required IAM role.
-7. Choose the same VPC/network context as your Neptune cluster.
-8. Create the notebook.
+5. Notebook instance type: `ml.t3.medium`.
+6. IAM role: create a new role or select the lab notebook role.
+7. Internet access: direct access through Amazon SageMaker.
+8. Choose the same VPC/network context as your Neptune cluster.
+9. Create the notebook.
+
+Some console screens display a fixed notebook prefix such as `aws-neptune-`. If so, entering `kg-lab-notebook` may create a final notebook named `aws-neptune-kg-lab-notebook`.
 
 Wait until the notebook status is ready.
 
@@ -172,4 +177,4 @@ If `%status` fails:
 - Confirm the notebook is associated with the right Neptune cluster.
 - Confirm the security group allows notebook-to-Neptune access.
 - Confirm IAM database authentication is disabled for this first lab.
-
+- Confirm you did not attach unrelated security groups that block notebook-to-cluster traffic.

@@ -89,8 +89,11 @@ Recommended lab controls:
 
 - Use one AWS region.
 - Use clear resource names with a lab prefix.
+- Use Neptune Serverless with a low max capacity for beginner labs, such as `1` minimum NCU and `2` maximum NCUs.
+- Use Neptune Standard storage for the beginner lab unless you are intentionally testing an I/O-heavy workload.
 - Add tags such as `Project`, `Environment`, and `Owner`.
 - Keep backup retention low for temporary labs.
+- Keep IAM database authentication off for the first connectivity lab, then enable it later during the security lab.
 - Disable deletion protection only for temporary lab resources.
 - Delete notebooks, clusters, snapshots, and S3 objects when finished.
 
@@ -106,4 +109,3 @@ Recommended lab controls:
 - [W3C SPARQL 1.1 Query Language](https://www.w3.org/TR/sparql11-query/)
 - [W3C OWL 2 Primer](https://www.w3.org/TR/owl-primer/)
 - [W3C SHACL](https://www.w3.org/TR/shacl/)
-

@@ -32,17 +32,33 @@ Choose **Neptune Database**, not Neptune Analytics.
 Use these lab settings when the console asks:
 
 ```text
+Type: Serverless
 Cluster name: kg-lab-neptune
+DB instance name: kg-lab-neptune-instance-1
 Engine: Amazon Neptune
+Engine version: use the latest default shown by the console
 Environment/workload: Development or test
-Capacity: Serverless, if available
+Template: Development and testing
 Minimum capacity: 1 NCU
-Maximum capacity: 2 or 4 NCUs
+Maximum capacity: 2 NCUs
 ```
 
 If serverless is not available in your console flow, choose the smallest supported provisioned instance that fits your region and account.
 
-## Step 3: Configure Networking
+Important: the console may default the maximum capacity to a much larger value such as `128` NCUs. Change the maximum to `2` NCUs for this lab.
+
+## Step 3: Choose Storage And Availability
+
+Use:
+
+```text
+Storage configuration: Neptune Standard
+Multi-AZ deployment: No
+```
+
+For this beginner lab, do not choose Neptune I/O-Optimized. I/O-Optimized is intended for workloads where predictable I/O pricing or heavier I/O behavior matters. Neptune Standard is the simpler lab choice.
+
+## Step 4: Configure Networking
 
 For a beginner lab, the default VPC is acceptable.
 
@@ -51,15 +67,58 @@ Use:
 ```text
 VPC: default VPC or console-created VPC
 Subnet group: default or console-created
-Public access: disabled
+Publicly accessible: No
 Port: 8182
-Security group: create new
+VPC security groups: create new, preferred
 Security group name: kg-lab-neptune-sg
 ```
 
 Do not expose Neptune publicly.
 
-## Step 4: Configure Security And Durability
+If the console has already selected unrelated security groups, remove them. For example, do not attach a security group that was created for an unrelated EC2 image, desktop, or marketplace server.
+
+Acceptable beginner options:
+
+```text
+Preferred: create new security group named kg-lab-neptune-sg
+Simplest fallback: use only the default security group
+Avoid: default security group plus unrelated security groups
+```
+
+## Step 5: Configure Notebook Creation
+
+The Neptune console can create a notebook during database creation. Turn this on for the first lab.
+
+Use:
+
+```text
+Create notebook: On
+Notebook instance type: ml.t3.medium
+Notebook name: kg-lab-notebook
+IAM role: Create an IAM role
+IAM role name or suffix: kg-lab-notebook-role
+Internet access: Direct access through Amazon SageMaker
+```
+
+Some console screens display fixed prefixes. If you see a prefix such as `aws-neptune-` before the notebook name field, enter only:
+
+```text
+kg-lab-notebook
+```
+
+The final notebook name may appear as:
+
+```text
+aws-neptune-kg-lab-notebook
+```
+
+Similarly, if the IAM role field shows a prefix such as `AWSNeptuneNotebookRole-`, enter only the suffix:
+
+```text
+kg-lab-notebook-role
+```
+
+## Step 6: Configure Security And Durability
 
 Use:
 
@@ -76,7 +135,37 @@ Tags:
 
 IAM database authentication will be enabled later in the security lab.
 
-## Step 5: Create The Cluster
+If the console shows **Turn on IAM Authentication** selected by default, change it to:
+
+```text
+Turn off IAM Authentication
+```
+
+The first SPARQL lab is intentionally unauthenticated at the Neptune database layer so Neptune Workbench can connect without SigV4 signing complexity.
+
+## Step 7: Final Pre-Create Checklist
+
+Before choosing **Create database**, confirm:
+
+```text
+Type: Serverless
+Template: Development and testing
+DB cluster name: kg-lab-neptune
+DB instance name: kg-lab-neptune-instance-1
+Storage: Neptune Standard
+Minimum NCUs: 1
+Maximum NCUs: 2
+Multi-AZ deployment: No
+Publicly accessible: No
+Security groups: only lab-appropriate security group selections
+Create notebook: On
+Notebook instance type: ml.t3.medium
+Notebook name: kg-lab-notebook
+IAM DB authentication: Off
+Encryption: enabled
+```
+
+## Step 8: Create The Cluster
 
 1. Review the settings.
 2. Choose **Create database**.
@@ -84,7 +173,7 @@ IAM database authentication will be enabled later in the security lab.
 
 This can take several minutes.
 
-## Step 6: Record Non-Secret Cluster Details
+## Step 9: Record Non-Secret Cluster Details
 
 From the cluster details page, record:
 
@@ -98,7 +187,7 @@ Region: us-east-1
 
 Do not commit temporary credentials or secrets.
 
-## Step 7: Verify With AWS CLI
+## Step 10: Verify With AWS CLI
 
 Run:
 
@@ -125,8 +214,11 @@ You are done when:
 - The Neptune cluster status is `available`.
 - The cluster endpoint exists.
 - Port is `8182`.
+- Maximum serverless capacity is `2` NCUs.
+- Neptune Standard storage is selected.
 - IAM database authentication is disabled for the first connection lab.
 - Public access is disabled.
+- The notebook is created or ready to create in the next lab.
 
 ## Troubleshooting
 
@@ -136,4 +228,3 @@ If the cluster does not create:
 - Confirm you are in `us-east-1`.
 - Try serverless first, then a small provisioned instance if needed.
 - Check whether your account has service quota restrictions.
-
