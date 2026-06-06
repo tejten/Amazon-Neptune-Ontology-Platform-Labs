@@ -175,6 +175,18 @@ Encryption: enabled
 
 This can take several minutes.
 
+The console may show the top-level cluster as `Available` while the writer DB instance still says `Creating`. This is normal. Wait until both rows are ready:
+
+```text
+Cluster row: Available
+Writer instance row: Available
+Notebook banner or notebook page: Ready to open
+```
+
+If the notebook is ready before the writer instance is fully available, give the writer instance a few more minutes before running SPARQL.
+
+The IAM Roles section may show `0` roles at this point. That is also normal. The S3 bulk-load role is added later in Lab 05.
+
 ## Step 9: Record Non-Secret Cluster Details
 
 From the cluster details page, record:
@@ -214,6 +226,7 @@ aws neptune describe-db-clusters \
 You are done when:
 
 - The Neptune cluster status is `available`.
+- The writer DB instance status is `available`.
 - The cluster endpoint exists.
 - Port is `8182`.
 - Maximum serverless capacity is the lowest value the console accepts, currently `16` NCUs in this console flow.

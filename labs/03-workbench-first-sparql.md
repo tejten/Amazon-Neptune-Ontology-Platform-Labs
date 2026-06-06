@@ -19,6 +19,8 @@ Neptune Workbench gives you a browser-based notebook experience for querying and
 
 If you created the notebook during Lab 02, skip to Step 2 after the notebook status becomes ready.
 
+Also confirm the Neptune writer DB instance is `Available`. The notebook can become ready slightly before the writer instance finishes creating.
+
 If you did not create a notebook during database creation, create one now in the Amazon Neptune console:
 
 1. Go to **Notebooks**.
@@ -53,6 +55,21 @@ Expected result:
 
 - The notebook should return Neptune status information.
 - If it fails, the notebook may not be connected to the correct cluster or network.
+
+A healthy result should look similar to:
+
+```text
+status: healthy
+dbEngineVersion: 1.4.7.0.R1
+role: writer
+sparql: version sparql-1.1
+IAMAuthentication: disabled
+serverlessConfiguration:
+  minCapacity: 1.0
+  maxCapacity: 16.0
+```
+
+The exact engine version may differ if AWS has released a newer default version.
 
 ## Step 4: Query The Empty Graph
 
@@ -178,3 +195,73 @@ If `%status` fails:
 - Confirm the security group allows notebook-to-Neptune access.
 - Confirm IAM database authentication is disabled for this first lab.
 - Confirm you did not attach unrelated security groups that block notebook-to-cluster traffic.
+
+### Timeout When Running `%status`
+
+If `%status` returns a timeout like this:
+
+```text
+ConnectTimeoutError
+Connection to <cluster-endpoint> timed out
+port=8182
+```
+
+The notebook can resolve the Neptune endpoint, but it cannot open a network connection to port `8182`. This is usually a VPC or security group issue.
+
+Check these in order:
+
+1. Confirm the writer DB instance is available.
+
+   ```text
+   Neptune console -> Databases -> kg-lab-neptune
+   Cluster row: Available
+   Writer instance row: Available
+   ```
+
+2. Find the Neptune cluster security group.
+
+   ```text
+   Neptune console -> Databases -> kg-lab-neptune -> Connectivity & Security
+   ```
+
+   Record the VPC security group attached to the cluster.
+
+3. Find the notebook security group.
+
+   ```text
+   SageMaker AI console -> Notebook instances -> aws-neptune-kg-lab-notebook
+   ```
+
+   Look in the notebook networking details and record the notebook security group.
+
+4. Add an inbound rule to the Neptune cluster security group.
+
+   ```text
+   Type: Custom TCP
+   Port: 8182
+   Source: notebook security group
+   Description: Allow Neptune Workbench notebook to connect to Neptune
+   ```
+
+   If the notebook and Neptune share the same security group, add a self-referencing inbound rule:
+
+   ```text
+   Type: Custom TCP
+   Port: 8182
+   Source: same security group ID
+   Description: Allow Neptune clients in this security group
+   ```
+
+5. Confirm the Neptune cluster is not publicly accessible.
+
+   ```text
+   Publicly accessible: No
+   ```
+
+6. Restart the notebook kernel and run:
+
+   ```text
+   %status
+   ```
+
+Do not fix this by making Neptune public. Keep Neptune private and allow only the notebook security group to reach port `8182`.
