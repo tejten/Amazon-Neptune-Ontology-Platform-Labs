@@ -89,13 +89,14 @@ Recommended lab controls:
 
 - Use one AWS region.
 - Use clear resource names with a lab prefix.
-- Use Neptune Serverless with a low max capacity for beginner labs, such as `1` minimum NCU and `2` maximum NCUs.
+- Use Neptune Serverless with the lowest capacity range the console accepts for beginner labs. In the current console flow, use `1` minimum NCU and `16` maximum NCUs.
 - Use Neptune Standard storage for the beginner lab unless you are intentionally testing an I/O-heavy workload.
 - Add tags such as `Project`, `Environment`, and `Owner`.
 - Keep backup retention low for temporary labs.
 - Keep IAM database authentication off for the first connectivity lab, then enable it later during the security lab.
 - Disable deletion protection only for temporary lab resources.
 - Delete notebooks, clusters, snapshots, and S3 objects when finished.
+- Because the current console may require a `16` NCU maximum, keep the lab small and tear down resources when not in use.
 
 ## Reference Documentation
 

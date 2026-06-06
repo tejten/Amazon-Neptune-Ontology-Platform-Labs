@@ -40,12 +40,14 @@ Engine version: use the latest default shown by the console
 Environment/workload: Development or test
 Template: Development and testing
 Minimum capacity: 1 NCU
-Maximum capacity: 2 NCUs
+Maximum capacity: 16 NCUs
 ```
 
 If serverless is not available in your console flow, choose the smallest supported provisioned instance that fits your region and account.
 
-Important: the console may default the maximum capacity to a much larger value such as `128` NCUs. Change the maximum to `2` NCUs for this lab.
+Important: the console may default the maximum capacity to `128` NCUs. If the console says the maximum must be between `16` and `128`, change the maximum to `16` NCUs for this lab.
+
+Neptune Serverless charges based on the capacity the database actually uses, but the maximum value is still a cost-risk ceiling. For a beginner lab, use the lowest maximum value the console accepts.
 
 ## Step 3: Choose Storage And Availability
 
@@ -154,7 +156,7 @@ DB cluster name: kg-lab-neptune
 DB instance name: kg-lab-neptune-instance-1
 Storage: Neptune Standard
 Minimum NCUs: 1
-Maximum NCUs: 2
+Maximum NCUs: 16
 Multi-AZ deployment: No
 Publicly accessible: No
 Security groups: only lab-appropriate security group selections
@@ -214,7 +216,7 @@ You are done when:
 - The Neptune cluster status is `available`.
 - The cluster endpoint exists.
 - Port is `8182`.
-- Maximum serverless capacity is `2` NCUs.
+- Maximum serverless capacity is the lowest value the console accepts, currently `16` NCUs in this console flow.
 - Neptune Standard storage is selected.
 - IAM database authentication is disabled for the first connection lab.
 - Public access is disabled.
