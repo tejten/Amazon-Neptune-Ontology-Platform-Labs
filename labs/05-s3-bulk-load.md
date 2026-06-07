@@ -192,6 +192,10 @@ In the Neptune console:
 
 From Neptune Workbench, use a cell that can call the loader endpoint, or use a network path that can reach Neptune.
 
+Do not test the Neptune loader URL from your laptop browser. The Neptune endpoint is private inside the VPC when `Publicly accessible` is set to `No`, which is the correct setting for this lab. Opening the Neptune security group to your personal IP is not the recommended fix, and it usually will not work unless the cluster is also publicly reachable.
+
+Use Neptune Workbench instead. The notebook can reach the private Neptune endpoint because it runs in the AWS environment connected to the cluster.
+
 Loader request shape:
 
 ```json
@@ -241,6 +245,42 @@ Loader: https://<writer-endpoint>:8182/loader
 ```
 
 Do not use the reader endpoint for the loader. The reader endpoint is for read queries.
+
+### Run The Loader From A Notebook Cell
+
+In Neptune Workbench, run this Python cell:
+
+```python
+import json
+import requests
+
+endpoint = "https://<writer-endpoint>:8182/loader"
+
+payload = {
+    "source": "s3://kg-lab-neptune-data-<unique-suffix>/rdf/aircraft-sample.ttl",
+    "format": "turtle",
+    "iamRoleArn": "arn:aws:iam::<your-account-id>:role/kg-lab-neptune-load-role",
+    "region": "us-east-1",
+    "failOnError": "TRUE",
+    "parallelism": "MEDIUM",
+    "updateSingleCardinalityProperties": "FALSE",
+    "parserConfiguration": {
+        "namedGraphUri": "https://example.com/graph/aircraft-data"
+    }
+}
+
+response = requests.post(endpoint, json=payload)
+print(response.status_code)
+print(json.dumps(response.json(), indent=2))
+```
+
+You can also run the built-in `%load` magic and fill out the generated form:
+
+```text
+%load
+```
+
+The S3 source must be in the same AWS Region as the Neptune cluster.
 
 ## Step 7: Check Load Status
 
