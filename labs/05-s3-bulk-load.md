@@ -79,14 +79,90 @@ aws s3 cp aircraft-sample.ttl \
 
 The Neptune loader needs an IAM role that allows Neptune to read from S3.
 
-High-level steps:
+AWS's Neptune bulk-load walkthrough uses the IAM role wizard with S3 first, then updates the role trust relationship so Neptune can assume the role.
+
+### Step 4A: Create The Role In IAM
+
+In the IAM console:
 
 1. Open **IAM**.
-2. Create a role.
-3. Select the trusted service for Neptune, if available.
-4. Attach permissions to read the lab S3 bucket.
-5. Name the role `kg-lab-neptune-load-role`.
-6. Record the role ARN.
+2. Choose **Roles**.
+3. Choose **Create role**.
+4. Trusted entity type: **AWS service**.
+5. Service or use case: **S3**.
+6. Use case: **S3**.
+7. Choose **Next**.
+
+On the **Add permissions** page, search for:
+
+```text
+AmazonS3ReadOnlyAccess
+```
+
+Select it for the beginner lab, then choose **Next**.
+
+This AWS-managed policy grants read/list access across S3. That is convenient for the lab, but broader than a production role should be. A production-style role should restrict S3 access to the specific lab bucket and prefix.
+
+Name the role:
+
+```text
+kg-lab-neptune-load-role
+```
+
+Create the role and open it.
+
+### Step 4B: Edit The Trust Relationship
+
+After the role is created, open:
+
+```text
+IAM -> Roles -> kg-lab-neptune-load-role -> Trust relationships -> Edit trust policy
+```
+
+Replace the trust policy with:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "rds.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+```
+
+Choose **Update policy**.
+
+Why `rds.amazonaws.com`? Neptune uses the Amazon RDS service principal for this role assumption path.
+
+### Step 4C: Optional Production-Style S3 Policy
+
+For a tighter policy, replace broad S3 read access with a customer-managed policy scoped to your bucket:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": "s3:ListBucket",
+      "Resource": "arn:aws:s3:::kg-lab-neptune-data-<unique-suffix>"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::kg-lab-neptune-data-<unique-suffix>/rdf/*"
+    }
+  ]
+}
+```
+
+If the S3 objects use SSE-KMS encryption, also grant `kms:Decrypt` on the KMS key.
 
 Minimum S3 permissions should allow:
 
@@ -96,6 +172,12 @@ s3:ListBucket
 ```
 
 Scope these permissions to the lab bucket.
+
+Record the role ARN:
+
+```text
+arn:aws:iam::<your-account-id>:role/kg-lab-neptune-load-role
+```
 
 ## Step 5: Associate The IAM Role With The Neptune Cluster
 
