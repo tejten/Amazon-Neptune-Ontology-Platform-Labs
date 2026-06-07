@@ -4,6 +4,114 @@
 
 Understand the baseline security model for a Neptune lab and clean up resources safely.
 
+## Quick Pause Checklist
+
+Use this when you want to continue the lab later without deleting your work.
+
+Stop these resources:
+
+```text
+1. Neptune Workbench notebook / SageMaker notebook instance
+2. Neptune DB cluster
+```
+
+Do not delete these if you want to continue tomorrow:
+
+```text
+Neptune cluster
+S3 bucket
+IAM roles
+Security groups
+Snapshots
+```
+
+Stopping the Neptune cluster keeps the cluster metadata and endpoints, but stops the DB instances. While the cluster is stopped, AWS still charges for cluster storage, manual snapshots, and automated backup storage within the retention window. Neptune may automatically start a stopped cluster after seven days so it can receive maintenance.
+
+### Pause With The Console
+
+Stop the notebook:
+
+```text
+Amazon Neptune -> Notebooks
+Select aws-neptune-kg-lab-notebook
+Actions -> Stop
+```
+
+You can also stop it from:
+
+```text
+SageMaker AI -> Notebook instances
+Select aws-neptune-kg-lab-notebook
+Actions -> Stop
+```
+
+Stop the Neptune cluster:
+
+```text
+Amazon Neptune -> Databases
+Select kg-lab-neptune
+Actions -> Stop
+```
+
+Wait for:
+
+```text
+Notebook status: Stopped
+Neptune cluster status: Stopped
+```
+
+### Pause With The CLI
+
+```bash
+aws sagemaker stop-notebook-instance \
+  --notebook-instance-name aws-neptune-kg-lab-notebook \
+  --region us-east-1
+
+aws neptune stop-db-cluster \
+  --db-cluster-identifier kg-lab-neptune \
+  --region us-east-1
+```
+
+Check status:
+
+```bash
+aws sagemaker describe-notebook-instance \
+  --notebook-instance-name aws-neptune-kg-lab-notebook \
+  --region us-east-1 \
+  --query 'NotebookInstanceStatus' \
+  --output text
+
+aws neptune describe-db-clusters \
+  --db-cluster-identifier kg-lab-neptune \
+  --region us-east-1 \
+  --query 'DBClusters[0].Status' \
+  --output text
+```
+
+### Resume Tomorrow
+
+Start the Neptune cluster first:
+
+```text
+Amazon Neptune -> Databases
+Select kg-lab-neptune
+Actions -> Start
+```
+
+Then start the notebook:
+
+```text
+Amazon Neptune -> Notebooks
+Select aws-neptune-kg-lab-notebook
+Actions -> Start
+```
+
+Wait until both are available, then open JupyterLab and run:
+
+```text
+%status
+```
+
 ## Security Concepts
 
 Neptune security involves several layers:
@@ -139,4 +247,3 @@ You are done when:
 - Lab S3 bucket is deleted if no longer needed.
 - Lab IAM roles are removed if no longer needed.
 - AWS Budgets shows no unexpected spend.
-

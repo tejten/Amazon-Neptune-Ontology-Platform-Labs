@@ -42,6 +42,11 @@ Wait until the notebook status is ready.
 1. Select the notebook.
 2. Choose **Open JupyterLab**.
 3. Create a new notebook.
+4. When prompted for a kernel, choose **Python 3**.
+
+Do not choose PyTorch, TensorFlow, Sparkmagic, R, or No Kernel for the RDF/SPARQL labs.
+
+If `Python 3` is not available, choose `conda_python3`, then run `%status`. If the graph notebook magics are not available, switch back to `Python 3` from the notebook kernel selector.
 
 ## Step 3: Check Neptune Status
 
