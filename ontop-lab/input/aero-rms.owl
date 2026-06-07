@@ -1,0 +1,32 @@
+@prefix ex: <https://example.com/aero/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ex:RMSRecord a owl:Class ;
+  rdfs:label "RMS Record" .
+
+ex:rmsRecordId a owl:DatatypeProperty ;
+  rdfs:domain ex:RMSRecord ;
+  rdfs:range xsd:string .
+
+ex:affectedPartNumber a owl:DatatypeProperty ;
+  rdfs:domain ex:RMSRecord ;
+  rdfs:range xsd:string .
+
+ex:severity a owl:DatatypeProperty ;
+  rdfs:domain ex:RMSRecord ;
+  rdfs:range xsd:string .
+
+ex:status a owl:DatatypeProperty ;
+  rdfs:domain ex:RMSRecord ;
+  rdfs:range xsd:string .
+
+ex:openedDate a owl:DatatypeProperty ;
+  rdfs:domain ex:RMSRecord ;
+  rdfs:range xsd:date .
+
+ex:summary a owl:DatatypeProperty ;
+  rdfs:domain ex:RMSRecord ;
+  rdfs:range xsd:string .
+

@@ -32,6 +32,7 @@ By the end of the lab sequence, you will have:
 | 06 | Competency questions | Write SPARQL queries that answer practical domain questions. |
 | 07 | Security and teardown | Apply security controls and clean up resources safely. |
 | 08 | Advanced platform expansion | Extend into Ontop federation, SHACL validation, GenAI, change control, and production-style documentation. |
+| 08A | Create Ontop endpoint | Run Ontop over a relational RMS table and federate it with Neptune. |
 
 ## Repository Layout
 
@@ -47,7 +48,20 @@ By the end of the lab sequence, you will have:
     ├── 05-s3-bulk-load.md
     ├── 06-competency-questions.md
     ├── 07-security-and-teardown.md
-    └── 08-future-labs.md
+    ├── 08-future-labs.md
+    └── 08a-create-ontop-endpoint.md
+```
+
+Advanced lab support files:
+
+```text
+ontop-lab/
+  docker-compose.yml
+  db/init.sql
+  input/aero-rms.owl
+  input/rms.obda
+  input/rms.properties.example
+  queries/test-rms.sparql
 ```
 
 ## Assumptions

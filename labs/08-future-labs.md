@@ -83,6 +83,12 @@ Key constraints:
 
 ### What You Will Build
 
+Detailed setup steps are in:
+
+```text
+labs/08a-create-ontop-endpoint.md
+```
+
 Create a small relational table representing external RMS records:
 
 ```text

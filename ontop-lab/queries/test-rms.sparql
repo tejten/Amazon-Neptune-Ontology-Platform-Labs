@@ -1,0 +1,14 @@
+PREFIX ex: <https://example.com/aero/>
+
+SELECT ?rmsRecord ?rmsRecordId ?partNumber ?severity ?status ?openedDate ?summary
+WHERE {
+  ?rmsRecord a ex:RMSRecord ;
+    ex:rmsRecordId ?rmsRecordId ;
+    ex:affectedPartNumber ?partNumber ;
+    ex:severity ?severity ;
+    ex:status ?status ;
+    ex:openedDate ?openedDate ;
+    ex:summary ?summary .
+}
+ORDER BY ?rmsRecordId
+

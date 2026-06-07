@@ -1,0 +1,16 @@
+[PrefixDeclaration]
+ex:     https://example.com/aero/
+xsd:    http://www.w3.org/2001/XMLSchema#
+
+[MappingDeclaration] @collection [[
+mappingId     rms-records
+target        ex:RMSRecord_{record_id} a ex:RMSRecord ;
+              ex:rmsRecordId {record_id}^^xsd:string ;
+              ex:affectedPartNumber {affected_part_number}^^xsd:string ;
+              ex:severity {severity}^^xsd:string ;
+              ex:status {status}^^xsd:string ;
+              ex:openedDate {opened_date}^^xsd:date ;
+              ex:summary {summary}^^xsd:string .
+source        SELECT record_id, affected_part_number, severity, status, opened_date, summary FROM rms_record
+]]
+
