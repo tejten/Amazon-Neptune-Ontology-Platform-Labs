@@ -215,6 +215,33 @@ The HTTP endpoint is:
 https://<neptune-cluster-endpoint>:8182/loader
 ```
 
+Use the **Writer** endpoint for bulk loading because the loader writes data into the graph.
+
+From the Neptune console:
+
+```text
+Neptune -> Databases -> kg-lab-neptune -> Connectivity & Security -> Endpoints
+```
+
+Build the loader URL like this:
+
+```text
+Writer endpoint: <writer-endpoint>
+Port: 8182
+Path: /loader
+HTTP endpoint: https://<writer-endpoint>:8182/loader
+```
+
+Related Neptune HTTP paths:
+
+```text
+Status: https://<writer-endpoint>:8182/status
+SPARQL: https://<writer-endpoint>:8182/sparql
+Loader: https://<writer-endpoint>:8182/loader
+```
+
+Do not use the reader endpoint for the loader. The reader endpoint is for read queries.
+
 ## Step 7: Check Load Status
 
 The loader returns a load ID. Use it to check status:
