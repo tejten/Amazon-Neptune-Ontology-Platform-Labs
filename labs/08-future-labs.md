@@ -116,6 +116,8 @@ ex:RMSRecord_RMS-1001 a ex:RMSRecord ;
 
 ### Suggested Ontology Additions
 
+The following snippet is Turtle syntax. Use it in a `.ttl` ontology file, not as a raw Python notebook cell:
+
 ```turtle
 @prefix ex: <https://example.com/aero/> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
@@ -141,6 +143,41 @@ ex:status a owl:DatatypeProperty ;
   rdfs:domain ex:RMSRecord ;
   rdfs:range xsd:string .
 ```
+
+To insert the same terms directly from Neptune Workbench, use a SPARQL cell instead:
+
+```sparql
+%%sparql
+PREFIX ex: <https://example.com/aero/>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+INSERT DATA {
+  GRAPH <https://example.com/graph/ontology> {
+    ex:RMSRecord a owl:Class ;
+      rdfs:label "RMS Record" .
+
+    ex:rmsRecordId a owl:DatatypeProperty ;
+      rdfs:domain ex:RMSRecord ;
+      rdfs:range xsd:string .
+
+    ex:affectedPartNumber a owl:DatatypeProperty ;
+      rdfs:domain ex:RMSRecord ;
+      rdfs:range xsd:string .
+
+    ex:severity a owl:DatatypeProperty ;
+      rdfs:domain ex:RMSRecord ;
+      rdfs:range xsd:string .
+
+    ex:status a owl:DatatypeProperty ;
+      rdfs:domain ex:RMSRecord ;
+      rdfs:range xsd:string .
+  }
+}
+```
+
+If you see a Python `SyntaxError` such as `leading zeros in decimal integer literals are not permitted`, the cell is being interpreted as Python instead of Turtle or SPARQL. Add the `%%sparql` cell magic and use `PREFIX`, not Turtle `@prefix`, for direct notebook execution.
 
 ### Federated Query Pattern
 
@@ -794,4 +831,3 @@ Create a short platform brief that answers:
 - [Amazon Bedrock Knowledge Bases with Neptune Analytics GraphRAG](https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-build-graphs.html)
 - [Neptune IAM authentication](https://docs.aws.amazon.com/neptune/latest/userguide/iam-auth.html)
 - [Connecting to Neptune with IAM authentication](https://docs.aws.amazon.com/neptune/latest/userguide/iam-auth-connecting.html)
-
