@@ -31,7 +31,7 @@ By the end of the lab sequence, you will have:
 | 05 | S3 bulk load | Load RDF data from Amazon S3 into Neptune. |
 | 06 | Competency questions | Write SPARQL queries that answer practical domain questions. |
 | 07 | Security and teardown | Apply security controls and clean up resources safely. |
-| 08 | Future labs | Extend into Ontop federation, GenAI, operations, and production-style documentation. |
+| 08 | Advanced platform expansion | Extend into Ontop federation, SHACL validation, GenAI, change control, and production-style documentation. |
 
 ## Repository Layout
 
