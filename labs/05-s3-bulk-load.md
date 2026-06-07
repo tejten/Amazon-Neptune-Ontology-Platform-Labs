@@ -14,6 +14,7 @@ SPARQL `INSERT DATA` is fine for small examples. For larger RDF files, use the N
 RDF file
   -> Amazon S3 bucket
     -> IAM role with S3 read access
+      -> S3 Gateway VPC endpoint
       -> Neptune bulk loader
         -> Neptune RDF graph
 ```
@@ -188,7 +189,61 @@ In the Neptune console:
 3. Add `kg-lab-neptune-load-role`.
 4. Wait until the association is active.
 
-## Step 6: Run The Loader
+## Step 6: Create The S3 Gateway VPC Endpoint
+
+The Neptune loader must be able to reach S3 from the Neptune cluster's VPC. If the VPC does not already have an S3 Gateway endpoint or another valid path to S3, the loader can return:
+
+```text
+InvalidParameterException
+Unable to connect to S3 endpoint
+```
+
+Create an S3 Gateway endpoint:
+
+1. Open the **VPC** console.
+2. Choose **Endpoints**.
+3. Choose **Create endpoint**.
+4. Name:
+
+   ```text
+   kg-lab-s3-gateway-endpoint
+   ```
+
+5. Service category: **AWS services**.
+6. Service name:
+
+   ```text
+   com.amazonaws.us-east-1.s3
+   ```
+
+7. Type: **Gateway**.
+8. VPC: choose the VPC that contains `kg-lab-neptune`.
+9. Route tables: select the route table or route tables associated with the Neptune subnets.
+
+   For a beginner lab in the default VPC, selecting all route tables in that VPC is acceptable.
+
+10. Policy: use **Full access** for the beginner lab.
+11. Choose **Create endpoint**.
+
+This does not make Neptune public. It adds a private VPC route so Neptune can reach S3.
+
+## Step 7: Verify S3 Before Loading
+
+Confirm the bucket and object exist in the same region as Neptune:
+
+```bash
+aws s3api get-bucket-location \
+  --bucket kg-lab-neptune-data-<unique-suffix>
+
+aws s3api head-object \
+  --bucket kg-lab-neptune-data-<unique-suffix> \
+  --key rdf/aircraft-sample.ttl \
+  --region us-east-1
+```
+
+For `us-east-1`, S3 may return `None` or an empty location value. That is normal.
+
+## Step 8: Run The Loader
 
 From Neptune Workbench, use a cell that can call the loader endpoint, or use a network path that can reach Neptune.
 
@@ -274,6 +329,28 @@ print(response.status_code)
 print(json.dumps(response.json(), indent=2))
 ```
 
+Replace all placeholder values before running the cell. Do not leave angle brackets in the values.
+
+Wrong:
+
+```python
+endpoint = "https://<writer-endpoint>:8182/loader"
+```
+
+Correct shape:
+
+```python
+endpoint = "https://kg-lab-neptune.cluster-xxxxxxxxxxxx.us-east-1.neptune.amazonaws.com:8182/loader"
+```
+
+If you see an error like this, you still have an unreplaced placeholder:
+
+```text
+Failed to resolve '%3cwriter-endpoint%3e'
+```
+
+`%3c` and `%3e` are URL-encoded forms of `<` and `>`.
+
 You can also run the built-in `%load` magic and fill out the generated form:
 
 ```text
@@ -282,7 +359,7 @@ You can also run the built-in `%load` magic and fill out the generated form:
 
 The S3 source must be in the same AWS Region as the Neptune cluster.
 
-## Step 7: Check Load Status
+## Step 9: Check Load Status
 
 The loader returns a load ID. Use it to check status:
 
@@ -292,7 +369,7 @@ https://<neptune-cluster-endpoint>:8182/loader/<load-id>
 
 Wait for the load status to complete.
 
-## Step 8: Query Loaded Data
+## Step 10: Query Loaded Data
 
 ```sparql
 %%sparql
@@ -334,5 +411,23 @@ You are done when:
 
 - RDF data exists in S3.
 - Neptune has an associated S3 loader role.
+- The Neptune VPC has an S3 Gateway endpoint.
 - The loader finishes successfully.
 - SPARQL can query loaded data.
+
+## Troubleshooting
+
+### `Unable to connect to S3 endpoint`
+
+This means the request reached Neptune, but Neptune could not reach S3.
+
+Check:
+
+- The S3 Gateway VPC endpoint exists.
+- Endpoint type is `Gateway`, not `Interface`.
+- Service is `com.amazonaws.us-east-1.s3`.
+- The endpoint is in the same VPC as Neptune.
+- The endpoint is attached to the route table or route tables used by the Neptune subnets.
+- The S3 bucket is in the same region as the Neptune cluster.
+- The object path in `source` exactly matches the S3 object key.
+- The Neptune load role is attached to the cluster and has S3 read/list permissions.
