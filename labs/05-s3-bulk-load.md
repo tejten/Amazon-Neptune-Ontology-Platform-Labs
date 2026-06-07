@@ -369,6 +369,32 @@ https://<neptune-cluster-endpoint>:8182/loader/<load-id>
 
 Wait for the load status to complete.
 
+In Neptune Workbench, do not paste the URL as raw text into a Python cell. Use Python `requests.get`:
+
+```python
+import json
+import requests
+
+load_id = "<load-id>"
+status_endpoint = f"https://<writer-endpoint>:8182/loader/{load_id}"
+
+response = requests.get(status_endpoint)
+print(response.status_code)
+print(json.dumps(response.json(), indent=2))
+```
+
+Or use the Neptune notebook magic:
+
+```text
+%load_status <load-id>
+```
+
+Example:
+
+```text
+%load_status c7c01db3-8d7f-40ba-ac21-064b905657b8
+```
+
 ## Step 10: Query Loaded Data
 
 ```sparql
