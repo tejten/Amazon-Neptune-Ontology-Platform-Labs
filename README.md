@@ -30,6 +30,7 @@ By the end of the lab sequence, you will have:
 | 04 | RDF/OWL ontology starter | Build the first ontology slice for aircraft, systems, parts, maintenance, requirements, and risks. |
 | 05 | S3 bulk load | Load RDF data from Amazon S3 into Neptune. |
 | 06 | Competency questions | Write SPARQL queries that answer practical domain questions. |
+| 06A | Graph Explorer | Visually inspect RDF graph neighborhoods and schema. |
 | 07 | Security and teardown | Apply security controls and clean up resources safely. |
 | 08 | Advanced platform expansion | Extend into Ontop federation, SHACL validation, GenAI, change control, and production-style documentation. |
 | 08A | Create Ontop endpoint | Run Ontop over a relational RMS table and federate it with Neptune. |
@@ -47,6 +48,7 @@ By the end of the lab sequence, you will have:
     ├── 04-rdf-owl-ontology-starter.md
     ├── 05-s3-bulk-load.md
     ├── 06-competency-questions.md
+    ├── 06a-graph-explorer.md
     ├── 07-security-and-teardown.md
     ├── 08-future-labs.md
     └── 08a-create-ontop-endpoint.md
